@@ -84,6 +84,10 @@
                                 <color key="backgroundColor" red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="End Trip"/>
+                                <connections>
+                                    <action selector="startTrip:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4or-h2-io8"/>
+                                    <action selector="stopTrip:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Vvw-YE-vyR"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Current Speed" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y2u-Qy-yez">
                                 <rect key="frame" x="213" y="204" width="172" height="21"/>
@@ -126,6 +130,9 @@
                                 <color key="backgroundColor" red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Start Trip"/>
+                                <connections>
+                                    <action selector="startTrip:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Cq3-zO-TpH"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
