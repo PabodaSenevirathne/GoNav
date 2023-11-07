@@ -83,18 +83,45 @@ class ViewController: UIViewController,CLLocationManagerDelegate, MKMapViewDeleg
                 if let previousLocation = previousLocation, let startTime = startTime {
                     
                     let timeElapsed = location.timestamp.timeIntervalSince(startTime)
-                        let distance = location.distance(from: previousLocation)
+                        let Distance = location.distance(from: previousLocation)
                         
                         let speed = location.speed
-                        totalDistance += distance
+                        totalDistance += Distance
 
                         if speed > MaxSpeed{
                             MaxSpeed = speed
                         }
+                    
+                    let acceleration = abs(speed - previousSpeed) / timeElapsed
+                    
+                    if acceleration > acceleration{
+                        MaxAcceleration = acceleration
                     }
+                    
+                    
+                    currentSpeed.text = "\(speed) km/h"
+                    maxSpeed.text = "\(MaxSpeed) km/h"
+                    distance.text = "\(totalDistance/100) km"
+                    maxAcceleration.text = "\(MaxAcceleration) m/s2"
+                    
+                    if speed > 120 {
+                        topBar.backgroundColor = .red
+                            
+                            
+                        } else {
+                            topBar.backgroundColor = .green
+                        }
+                    }
+                    
+                    mapView.setCenter(location.coordinate, animated: true)
+                }
+                previousSpeed = location.speed
+                previousLocation = location
                 }
             
-                
+            
+            
+            
         }
         
         
@@ -102,5 +129,5 @@ class ViewController: UIViewController,CLLocationManagerDelegate, MKMapViewDeleg
         
     }
     
-    }
+    
 
