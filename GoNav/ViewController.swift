@@ -9,9 +9,9 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController,CLLocationManagerDelegate, MKMapViewDelegate
+class ViewController: UIViewController
 {
-
+    
     
     
     @IBOutlet weak var startButton: UIButton!
@@ -48,86 +48,86 @@ class ViewController: UIViewController,CLLocationManagerDelegate, MKMapViewDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
-        mapView.showsUserLocation = true
-        mapView.userTrackingMode = .follow
-    }
-
-    
-    @IBAction func stopTrip(_ sender: UIButton) {
-        tripStarted = false
-        startTime = nil
+        
+        let sourceLocation = CLLocationCoordinate2D(latitude: 28.704060, longitude: 77.102493)
+        let destinationLocation = CLLocationCoordinate2D(latitude: 28.459497, longitude: 77.026634)
+        
+        createPath(sourceLocation: sourceLocation, destinationLocation: destinationLocation)
+        
+        self.mapView.delegate = self
+        
     }
     
-    @IBAction func startTrip(_ sender: UIButton) {
-        if !tripStarted{
-            tripStarted = true
-            startTime = Date()
-            totalDistance = 0
-            MaxSpeed = 0
-            MaxAcceleration = 0
-            previousSpeed = 0
-            previousLocation = nil
+    
+    func createPath(sourceLocation : CLLocationCoordinate2D, destinationLocation : CLLocationCoordinate2D) {
+        let sourcePlaceMark = MKPlacemark(coordinate: sourceLocation, addressDictionary: nil)
+        let destinationPlaceMark = MKPlacemark(coordinate: destinationLocation, addressDictionary: nil)
+        
+        
+        let sourceMapItem = MKMapItem(placemark: sourcePlaceMark)
+        let destinationItem = MKMapItem(placemark: destinationPlaceMark)
+        
+        
+        let sourceAnotation = MKPointAnnotation()
+        sourceAnotation.title = "Delhi"
+        sourceAnotation.subtitle = "The Capital of INIDA"
+        if let location = sourcePlaceMark.location {
+            sourceAnotation.coordinate = location.coordinate
         }
         
-        
-        func manageLocation(_ manager:CLLocationManager, didUpdateLocations locations: [CLLocation]){
-            
-            guard let location = locations.last else {return}
-            
-            if tripStarted{
-                
-                
-                if let previousLocation = previousLocation, let startTime = startTime {
-                    
-                    let timeElapsed = location.timestamp.timeIntervalSince(startTime)
-                        let Distance = location.distance(from: previousLocation)
-                        
-                        let speed = location.speed
-                        totalDistance += Distance
-
-                        if speed > MaxSpeed{
-                            MaxSpeed = speed
-                        }
-                    
-                    let acceleration = abs(speed - previousSpeed) / timeElapsed
-                    
-                    if acceleration > acceleration{
-                        MaxAcceleration = acceleration
-                    }
-                    
-                    
-                    currentSpeed.text = "\(speed) km/h"
-                    maxSpeed.text = "\(MaxSpeed) km/h"
-                    distance.text = "\(totalDistance/100) km"
-                    maxAcceleration.text = "\(MaxAcceleration) m/s2"
-                    
-                    if speed > 120 {
-                        topBar.backgroundColor = .red
-                            
-                            
-                        } else {
-                            topBar.backgroundColor = .green
-                        }
-                    }
-                    
-                    mapView.setCenter(location.coordinate, animated: true)
-                }
-                previousSpeed = location.speed
-                previousLocation = location
-                }
-            
-            
-            
-            
+        let destinationAnotation = MKPointAnnotation()
+        destinationAnotation.title = "Gurugram"
+        destinationAnotation.subtitle = "The HUB of IT Industries"
+        if let location = destinationPlaceMark.location {
+            destinationAnotation.coordinate = location.coordinate
         }
         
+        self.mapView.showAnnotations([sourceAnotation, destinationAnotation], animated: true)
         
+        
+        
+        let directionRequest = MKDirections.Request()
+        directionRequest.source = sourceMapItem
+        directionRequest.destination = destinationItem
+        directionRequest.transportType = .automobile
+        
+        let direction = MKDirections(request: directionRequest)
+        
+        
+        direction.calculate { (response, error) in
+            guard let response = response else {
+                if let error = error {
+                    print("ERROR FOUND : \(error.localizedDescription)")
+                }
+                return
+            }
+            
+            let route = response.routes[0]
+            self.mapView.addOverlay(route.polyline, level: MKOverlayLevel.aboveRoads)
+            
+            let rect = route.polyline.boundingMapRect
+            
+            self.mapView.setRegion(MKCoordinateRegion(rect), animated: true)
+            
+        }
+    }
+    
+    
+}
+    
+    
+    extension ViewController : MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let rendere = MKPolylineRenderer(overlay: overlay)
+        rendere.lineWidth = 5
+        rendere.strokeColor = .systemBlue
+        
+        return rendere
+    }
         
         
     }
+
     
     
 
