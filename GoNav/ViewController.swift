@@ -9,7 +9,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController
+class ViewController: UIViewController,CLLocationManagerDelegate
 {
     
     
@@ -39,10 +39,8 @@ class ViewController: UIViewController
     var locationManager = CLLocationManager()
     var tripStarted = false
     var startTime: Date?
-    var totalDistance: CLLocationDistance = 0
-    var MaxSpeed: CLLocationSpeed = 0
-    var MaxAcceleration: Double = 0
-    var previousSpeed: CLLocationSpeed = 0
+    var totalDistance: CLLocationDistance = 0.0
+    var MaxSpeed: CLLocationSpeed = 0.0
     var previousLocation: CLLocation?
     
     override func viewDidLoad() {
@@ -55,8 +53,98 @@ class ViewController: UIViewController
         createPath(sourceLocation: sourceLocation, destinationLocation: destinationLocation)
         
         self.mapView.delegate = self
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
         
+        locationManager.showsBackgroundLocationIndicator = true
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.pausesLocationUpdatesAutomatically = false
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.activityType = .automotiveNavigation
+        locationManager.startUpdatingLocation()
+        locationManager.pausesLocationUpdatesAutomatically = false    }
+    
+    
+    
+    @IBAction func startTrip(_ sender: UIButton) {
+        // Start the trip
+               tripStarted = true
+               startButton.isEnabled = false
+               stopButton.isEnabled = true
+               startTime = Date()
+               locationManager.startUpdatingLocation()
     }
+    
+    
+    @IBAction func stopTrip(_ sender: UIButton) {
+        // End the trip
+               tripStarted = false
+               locationManager.stopUpdatingLocation()
+               startButton.isEnabled = true
+               stopButton.isEnabled = false
+    }
+    
+    
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+            if let location = locations.last {
+                let speed = location.speed * 3.6 // Convert m/s to km/h
+                currentSpeed.text = String(format: "%.1f km/h", speed)
+                
+                if speed > MaxSpeed {
+                    MaxSpeed = speed
+                    maxSpeed.text = String(format: "Max Speed: %.1f km/h", MaxSpeed)
+                }
+                
+                if let prevLocation = previousLocation {
+                    let Distance = location.distance(from: prevLocation)
+                    totalDistance += Distance
+                    distance.text = String(format: "Distance: %.2f km", totalDistance / 1000)
+                    
+                    //let timeElapsed = Date().timeIntervalSince(startTime!)
+                    //let AverageSpeed = (totalDistance / 1000) / (timeElapsed / 3600)
+                    //averageSpeed.text = String(format: "Avg Speed: %.1f km/h", AverageSpeed)
+                    
+                    if let startTime = startTime {
+                           let timeElapsed = Date().timeIntervalSince(startTime)
+                           
+                           // Ensure timeElapsed is greater than zero to avoid division by zero
+                           if timeElapsed > 0 {
+                               let AverageSpeed = (totalDistance / 1000) / (timeElapsed / 3600)
+                               
+                               // Update the average speed label
+                               averageSpeed.text = String(format: "Avg Speed: %.1f km/h", AverageSpeed)
+                           }
+                       }
+                    let acceleration = abs(speed - prevLocation.speed) / Double(location.timestamp.timeIntervalSince(prevLocation.timestamp))
+                    maxAcceleration.text = String(format: "Max Accel: %.2f m/s^2", acceleration)
+                    
+                    if speed > 115.0 {
+                        topBar.backgroundColor = UIColor.red
+                    } else {
+                        topBar.backgroundColor = UIColor.green
+                    }
+                    
+                    if tripStarted {
+                        // Update the map and zoom to the current location
+                        mapView.setCenter(location.coordinate, animated: true)
+                        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
+                        mapView.setRegion(region, animated: true)
+                        
+                        // Add the user's location as an annotation on the map
+                                    let userAnnotation = MKPointAnnotation()
+                                    userAnnotation.coordinate = location.coordinate
+                                    mapView.addAnnotation(userAnnotation)
+
+                                  
+                        
+                    }
+                }
+                
+                previousLocation = location
+            }
+        }
     
     
     func createPath(sourceLocation : CLLocationCoordinate2D, destinationLocation : CLLocationCoordinate2D) {
