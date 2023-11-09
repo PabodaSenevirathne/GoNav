@@ -168,15 +168,13 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         
         
         let sourceAnotation = MKPointAnnotation()
-        sourceAnotation.title = "Delhi"
-        sourceAnotation.subtitle = "The Capital of INIDA"
+        sourceAnotation.title = "Conestoga Waterloo Campus"
         if let location = sourcePlaceMark.location {
             sourceAnotation.coordinate = location.coordinate
         }
         
         let destinationAnotation = MKPointAnnotation()
-        destinationAnotation.title = "Gurugram"
-        destinationAnotation.subtitle = "The HUB of IT Industries"
+        destinationAnotation.title = "Conestoga Doon Campus"
         if let location = destinationPlaceMark.location {
             destinationAnotation.coordinate = location.coordinate
         }
