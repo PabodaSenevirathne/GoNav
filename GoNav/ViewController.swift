@@ -47,9 +47,8 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let sourceLocation = CLLocationCoordinate2D(latitude: 28.704060, longitude: 77.102493)
-        let destinationLocation = CLLocationCoordinate2D(latitude: 28.459497, longitude: 77.026634)
-        
+        let sourceLocation = CLLocationCoordinate2D(latitude: 43.4723, longitude: -80.5449)
+        let destinationLocation = CLLocationCoordinate2D(latitude: 43.4121, longitude: -80.4422)
         createPath(sourceLocation: sourceLocation, destinationLocation: destinationLocation)
         
         self.mapView.delegate = self
@@ -68,12 +67,17 @@ class ViewController: UIViewController,CLLocationManagerDelegate
     
     
     @IBAction func startTrip(_ sender: UIButton) {
-        // Start the trip
+        print("Start Trip button clicked")        // Start the trip
                tripStarted = true
                startButton.isEnabled = false
                stopButton.isEnabled = true
                startTime = Date()
-               locationManager.startUpdatingLocation()
+        
+        locationManager.startUpdatingLocation()
+        // Log start location
+            let startLocation = CLLocationCoordinate2D(latitude:43.4723, longitude: -80.5449)
+            print("Start Location: \(startLocation)")
+        
     }
     
     
@@ -83,12 +87,17 @@ class ViewController: UIViewController,CLLocationManagerDelegate
                locationManager.stopUpdatingLocation()
                startButton.isEnabled = true
                stopButton.isEnabled = false
+        
+        // Log destination location
+            let destinationLocation = CLLocationCoordinate2D(latitude: 43.4121, longitude: -80.4422)
+            print("Destination Location: \(destinationLocation)")
     }
-    
-    
-    
+        
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-            if let location = locations.last {
+        
+            if tripStarted, let location = locations.last {
+                print("Received location update: \(location.coordinate.latitude), \(location.coordinate.longitude)")
+                
                 let speed = location.speed * 3.6 // Convert m/s to km/h
                 currentSpeed.text = String(format: "%.1f km/h", speed)
                 
