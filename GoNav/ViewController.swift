@@ -14,23 +14,24 @@ class ViewController: UIViewController,CLLocationManagerDelegate
     
     
     
+    @IBOutlet weak var currentSpeedLabel: UILabel!
     @IBOutlet weak var startButton: UIButton!
     
     
+    @IBOutlet weak var maxSpeedLabel: UILabel!
+    
+    
+    @IBOutlet weak var averageSpeedLabel: UILabel!
+    
+    @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var stopButton: UIButton!
     
+    @IBOutlet weak var maxAccelerationLabel: UILabel!
     
     @IBOutlet weak var mapView: MKMapView!
     
-    @IBOutlet weak var currentSpeed: UILabel!
+   
     
-    @IBOutlet weak var maxSpeed: UILabel!
-    
-    @IBOutlet weak var averageSpeed: UILabel!
-    
-    @IBOutlet weak var distance: UILabel!
-    
-    @IBOutlet weak var maxAcceleration: UILabel!
     
     @IBOutlet weak var topBar: UIView!
     
@@ -75,8 +76,8 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         
         locationManager.startUpdatingLocation()
         // Log start location
-            let startLocation = CLLocationCoordinate2D(latitude:43.4723, longitude: -80.5449)
-            print("Start Location: \(startLocation)")
+            let sourceLocation = CLLocationCoordinate2D(latitude:43.4723, longitude: -80.5449)
+            print("Start Location: \(sourceLocation)")
         
     }
     
@@ -95,21 +96,22 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-            if tripStarted, let location = locations.last {
-                print("Received location update: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-                
-                let speed = location.speed * 3.6 // Convert m/s to km/h
-                currentSpeed.text = String(format: "%.1f km/h", speed)
+           if tripStarted, let sourceLocation = locations.first {
+                print("Received location update: \(sourceLocation.coordinate.latitude), \(sourceLocation.coordinate.longitude)")
+            
+               
+                let speed = sourceLocation.speed * 3.6 // Convert m/s to km/h
+                currentSpeedLabel.text = String(format: "%.1f km/h", speed)
                 
                 if speed > MaxSpeed {
                     MaxSpeed = speed
-                    maxSpeed.text = String(format: "Max Speed: %.1f km/h", MaxSpeed)
+                    maxSpeedLabel.text = String(format: "%.1f km/h", MaxSpeed)
                 }
                 
                 if let prevLocation = previousLocation {
-                    let Distance = location.distance(from: prevLocation)
-                    totalDistance += Distance
-                    distance.text = String(format: "Distance: %.2f km", totalDistance / 1000)
+                    let distance = sourceLocation.distance(from: prevLocation)
+                    totalDistance += distance
+                    distanceLabel.text = String(format: "%.2f km", totalDistance / 1000)
                     
                     //let timeElapsed = Date().timeIntervalSince(startTime!)
                     //let AverageSpeed = (totalDistance / 1000) / (timeElapsed / 3600)
@@ -120,14 +122,14 @@ class ViewController: UIViewController,CLLocationManagerDelegate
                            
                            // Ensure timeElapsed is greater than zero to avoid division by zero
                            if timeElapsed > 0 {
-                               let AverageSpeed = (totalDistance / 1000) / (timeElapsed / 3600)
+                               let averageSpeed = (totalDistance / 1000) / (timeElapsed / 3600)
                                
                                // Update the average speed label
-                               averageSpeed.text = String(format: "Avg Speed: %.1f km/h", AverageSpeed)
+                               averageSpeedLabel.text = String(format: "%.1f km/h", averageSpeed)
                            }
                        }
-                    let acceleration = abs(speed - prevLocation.speed) / Double(location.timestamp.timeIntervalSince(prevLocation.timestamp))
-                    maxAcceleration.text = String(format: "Max Accel: %.2f m/s^2", acceleration)
+                    let acceleration = abs(speed - prevLocation.speed) / Double(sourceLocation.timestamp.timeIntervalSince(prevLocation.timestamp))
+                    maxAccelerationLabel.text = String(format: "%.2f m/s^2", acceleration)
                     
                     if speed > 115.0 {
                         topBar.backgroundColor = UIColor.red
@@ -137,13 +139,13 @@ class ViewController: UIViewController,CLLocationManagerDelegate
                     
                     if tripStarted {
                         // Update the map and zoom to the current location
-                        mapView.setCenter(location.coordinate, animated: true)
-                        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
+                        mapView.setCenter(sourceLocation.coordinate, animated: true)
+                        let region = MKCoordinateRegion(center: sourceLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
                         mapView.setRegion(region, animated: true)
                         
                         // Add the user's location as an annotation on the map
                                     let userAnnotation = MKPointAnnotation()
-                                    userAnnotation.coordinate = location.coordinate
+                                    userAnnotation.coordinate = sourceLocation.coordinate
                                     mapView.addAnnotation(userAnnotation)
 
                                   
@@ -151,7 +153,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate
                     }
                 }
                 
-                previousLocation = location
+                previousLocation = sourceLocation
             }
         }
     
