@@ -48,8 +48,8 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let sourceLocation = CLLocationCoordinate2D(latitude: 43.4723, longitude: -80.5449)
-        let destinationLocation = CLLocationCoordinate2D(latitude: 43.4121, longitude: -80.4422)
+        let sourceLocation = CLLocationCoordinate2D(latitude: 43.47950197259528, longitude: -80.51852976108717)
+        let destinationLocation = CLLocationCoordinate2D(latitude: 43.39456787588452, longitude: -80.40621851466166)
         createPath(sourceLocation: sourceLocation, destinationLocation: destinationLocation)
         
         self.mapView.delegate = self
@@ -76,7 +76,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         
         locationManager.startUpdatingLocation()
         // Log start location
-            let sourceLocation = CLLocationCoordinate2D(latitude:43.4723, longitude: -80.5449)
+            let sourceLocation = CLLocationCoordinate2D(latitude:43.47950197259528, longitude: -80.51852976108717)
             print("Start Location: \(sourceLocation)")
         
     }
@@ -90,7 +90,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate
                stopButton.isEnabled = false
         
         // Log destination location
-            let destinationLocation = CLLocationCoordinate2D(latitude: 43.4121, longitude: -80.4422)
+            let destinationLocation = CLLocationCoordinate2D(latitude: 43.39456787588452, longitude: -80.40621851466166)
             print("Destination Location: \(destinationLocation)")
     }
         
