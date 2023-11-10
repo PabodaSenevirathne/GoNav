@@ -41,7 +41,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate
     var tripStarted = false
     var startTime: Date?
     var totalDistance: CLLocationDistance = 0.0
-    var MaxSpeed: CLLocationSpeed = 0.0
+    var maxSpeed: CLLocationSpeed = 0.0
     var previousLocation: CLLocation?
     
     override func viewDidLoad() {
@@ -58,12 +58,12 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         locationManager.requestWhenInUseAuthorization()
         
         locationManager.showsBackgroundLocationIndicator = true
-        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.allowsBackgroundLocationUpdates = false
         locationManager.pausesLocationUpdatesAutomatically = false
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.activityType = .automotiveNavigation
         locationManager.startUpdatingLocation()
-        locationManager.pausesLocationUpdatesAutomatically = false    }
+        }
     
     
     
@@ -78,6 +78,8 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         // Log start location
             let sourceLocation = CLLocationCoordinate2D(latitude:43.47950197259528, longitude: -80.51852976108717)
             print("Start Location: \(sourceLocation)")
+        // Update the color of the bottom bar to green
+                bottomBar.backgroundColor = UIColor.green
         
     }
     
@@ -92,7 +94,9 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         // Log destination location
             let destinationLocation = CLLocationCoordinate2D(latitude: 43.39456787588452, longitude: -80.40621851466166)
             print("Destination Location: \(destinationLocation)")
-    }
+        
+        // Update the color of the bottom bar to gray
+                bottomBar.backgroundColor = UIColor.gray    }
         
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -103,9 +107,9 @@ class ViewController: UIViewController,CLLocationManagerDelegate
                 let speed = sourceLocation.speed * 3.6 // Convert m/s to km/h
                 currentSpeedLabel.text = String(format: "%.1f km/h", speed)
                 
-                if speed > MaxSpeed {
-                    MaxSpeed = speed
-                    maxSpeedLabel.text = String(format: "%.1f km/h", MaxSpeed)
+                if speed > maxSpeed {
+                    maxSpeed = speed
+                    maxSpeedLabel.text = String(format: "%.1f km/h", maxSpeed)
                 }
                 
                 if let prevLocation = previousLocation {

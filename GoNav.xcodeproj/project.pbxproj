@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D725F3602AFE67000001882D /* Conestoga Waterloo.gpx in Resources */ = {isa = PBXBuildFile; fileRef = D725F35F2AFE67000001882D /* Conestoga Waterloo.gpx */; };
 		D7EB44012AF94814005797B0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7EB44002AF94814005797B0 /* AppDelegate.swift */; };
 		D7EB44032AF94814005797B0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7EB44022AF94814005797B0 /* SceneDelegate.swift */; };
 		D7EB44052AF94814005797B0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7EB44042AF94814005797B0 /* ViewController.swift */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D725F35F2AFE67000001882D /* Conestoga Waterloo.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Conestoga Waterloo.gpx"; sourceTree = "<group>"; };
 		D7EB43FD2AF94814005797B0 /* GoNav.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoNav.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7EB44002AF94814005797B0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D7EB44022AF94814005797B0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 		D7EB43F42AF94814005797B0 = {
 			isa = PBXGroup;
 			children = (
+				D725F35F2AFE67000001882D /* Conestoga Waterloo.gpx */,
 				D7EB43FF2AF94814005797B0 /* GoNav */,
 				D7EB44162AF94815005797B0 /* GoNavTests */,
 				D7EB44202AF94815005797B0 /* GoNavUITests */,
@@ -234,6 +237,7 @@
 				D7EB440D2AF94815005797B0 /* LaunchScreen.storyboard in Resources */,
 				D7EB440A2AF94815005797B0 /* Assets.xcassets in Resources */,
 				D7EB44082AF94814005797B0 /* Main.storyboard in Resources */,
+				D725F3602AFE67000001882D /* Conestoga Waterloo.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
