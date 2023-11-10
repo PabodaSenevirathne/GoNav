@@ -2,6 +2,10 @@
 <gpx version="1.1" creator="Xcode">
     <wpt lat="43.47950197259528" lon="-80.51852976108717">
         <name>Conestoga Waterloo Campus</name>
+        <time>2023-11-10T09:00:00Z</time>
     </wpt>
-    <!-- Add more waypoints as needed -->
+    <wpt lat="43.39456787588452" lon="-80.40621851466166">
+        <name>Conestoga Doon Campus</name>
+        <time>2023-11-10T09:15:00Z</time>
+    </wpt>
 </gpx>

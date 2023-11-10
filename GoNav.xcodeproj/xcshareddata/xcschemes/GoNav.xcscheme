@@ -73,7 +73,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <LocationScenarioReference
-         identifier = "../../../../Conestoga Waterloo.gpx"
+         identifier = "../../Conestoga Waterloo.gpx"
          referenceType = "0">
       </LocationScenarioReference>
    </LaunchAction>
