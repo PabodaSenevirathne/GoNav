@@ -106,7 +106,8 @@ class ViewController: UIViewController,CLLocationManagerDelegate
                
                 let speed = sourceLocation.speed * 3.6 // Convert m/s to km/h
                 currentSpeedLabel.text = String(format: "%.1f km/h", speed)
-                
+               print("Current speed == \(speed)")
+               
                 if speed > maxSpeed {
                     maxSpeed = speed
                     maxSpeedLabel.text = String(format: "%.1f km/h", maxSpeed)
