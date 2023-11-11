@@ -30,6 +30,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate
     var maxAcceleration: Double = 0.0
     var previousLocation: CLLocation?
     var distanceExceedingSpeedLimit: CLLocationDistance = 0.0
+    var speed: Double = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,8 +50,8 @@ class ViewController: UIViewController,CLLocationManagerDelegate
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         locationManager.showsBackgroundLocationIndicator = true
-        locationManager.allowsBackgroundLocationUpdates = false
-        locationManager.pausesLocationUpdatesAutomatically = false
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.pausesLocationUpdatesAutomatically = true
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.activityType = .automotiveNavigation
         locationManager.startUpdatingLocation()
@@ -60,11 +61,12 @@ class ViewController: UIViewController,CLLocationManagerDelegate
     @IBAction func startTrip(_ sender: UIButton) {
         print("Start Trip button clicked")
                tripStarted = true
+               locationManager.startUpdatingLocation()
                startButton.isEnabled = false
                stopButton.isEnabled = true
                startTime = Date()
         
-        locationManager.startUpdatingLocation()
+        
         //start location
             let sourceLocation = CLLocationCoordinate2D(latitude:43.47950197259528, longitude: -80.51852976108717)
             print("Start Location: \(sourceLocation)")
@@ -89,15 +91,24 @@ class ViewController: UIViewController,CLLocationManagerDelegate
                 bottomBar.backgroundColor = UIColor.gray    }
         
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-           if tripStarted, let sourceLocation = locations.first {
-                print("Received location update: \(sourceLocation.coordinate.latitude), \(sourceLocation.coordinate.longitude)")
+        if tripStarted, let sourceLocation = locations.first {
+            print("Received location update: \(sourceLocation.coordinate.latitude), \(sourceLocation.coordinate.longitude)")
+
+           // calculate the speed
+            let timeElapsed = sourceLocation.timestamp.timeIntervalSince(previousLocation?.timestamp ?? sourceLocation.timestamp)
+
+                   // Calculate the distance between the current and previous location
+                   let distance = sourceLocation.distance(from: previousLocation ?? sourceLocation)
             
-               // calculate the speed
-                let speed = sourceLocation.speed * 3.6 // Convert m/s to km/h
-                currentSpeedLabel.text = String(format: "%.1f km/h", speed)
-               
-               print("Current speed == \(speed)")
+                   // calculate the speed and convert to m/s to km/h
+                   let speed = (distance / timeElapsed) * 3.6
+
+                   if speed >= 0 {
+                       currentSpeedLabel.text = String(format: "%.1f km/h", speed)
+                       print("Current speed == \(speed)")
+                   } else {
+                       print("Invalid speed value")
+                   }
                
                // calculate max speed
                 if speed > maxSpeed {
@@ -133,12 +144,11 @@ class ViewController: UIViewController,CLLocationManagerDelegate
                     
                 // calculate max acceleration speed
                     let acceleration = abs(speed - prevLocation.speed) / Double(sourceLocation.timestamp.timeIntervalSince(prevLocation.timestamp))
-                   // maxAccelerationLabel.text = String(format: "%.2f m/s^2", acceleration)
-                    
+                    //maxAccelerationLabel.text = String(format: "%.2f m/s^2", acceleration)
                     if acceleration > maxAcceleration {
-                        maxAcceleration = acceleration
-                        maxAccelerationLabel.text = String(format: "%.2f m/s^2", maxAcceleration)
-                        
+                       maxAcceleration = acceleration
+                       maxAccelerationLabel.text = String(format: "%.2f m/s^2", maxAcceleration)
+                                            
                     }
                     
                     //change the clour of top bar accordingto the speed
